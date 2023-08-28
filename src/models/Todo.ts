@@ -1,0 +1,16 @@
+import mongoose, { Schema } from "mongoose";
+
+export interface ITodo extends Document{
+    title:string,
+    isDone:boolean,
+}
+
+const TodoSchema:Schema=new mongoose.Schema({
+    title:{type:String,require:true},
+    isDone:{type:Boolean,default:false}
+
+},{timestamps:true});
+
+const Todo=mongoose.model<ITodo>("Todo",TodoSchema);
+
+export default Todo;

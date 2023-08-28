@@ -65,7 +65,7 @@ const userLoginController = async (
         const accessToken = jwt.sign(
           { id: user._id },
           process.env.ACCESS_KEY ||
-            "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
+          "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
           { expiresIn: "15m" }
         );
         const refreshToken = jwt.sign(
@@ -75,7 +75,6 @@ const userLoginController = async (
         );
         user.refreshToken = refreshToken;
         await user.save();
-
         res
           .cookie("refreshToken", refreshToken, { httpOnly: true })
           .json({ accessToken });
@@ -114,7 +113,7 @@ const userRefreshTokenController = async (
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_KEY ||
-          "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
+        "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
         { expiresIn: "15m" }
       );
 

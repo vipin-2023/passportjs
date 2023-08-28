@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/",authenticateJwtMiddleware,getTodos);
 router.post("/",authenticateJwtMiddleware,createTodos);
-router.get("/:id/",authenticateJwtMiddleware,getTodo);
+router.get("/:id",authenticateJwtMiddleware,getTodo);
 router.put("/:id",authenticateJwtMiddleware,updateTodo);
 router.delete("/:id",authenticateJwtMiddleware,deleteTodo);
 

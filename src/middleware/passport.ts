@@ -39,12 +39,10 @@ passport.use(
 passport.use(
   new JWTStrategy(jwtOptions, async (jwtPayload, done) => {
     try {
-       
       const user = await User.findById(jwtPayload.id);
       if (!user) {
         return done(null, false, { message: "Incorrect email or password" });
       }
-
       return done(null, user);
     } catch (error) {
       return done(error, false);

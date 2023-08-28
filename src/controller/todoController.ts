@@ -17,10 +17,10 @@ const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   const page:number = value.page || 1;
   
   try {
+
     const todos = await Todo.find().sort({_id:-1}).skip((page-1)*perPage).limit(perPage);
     const totalCount = await Todo.countDocuments();
     const totalPages = Math.ceil(totalCount/perPage)
-
     res.json({ todos,totalPages });
   } catch (error) {
     next(error);

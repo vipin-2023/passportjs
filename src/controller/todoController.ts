@@ -4,13 +4,56 @@ import Todo from "../models/Todo";
 import Joi from "joi";
 
 const getTodos = async (req: Request, res: Response, next: NextFunction) => {
+  const schema = Joi.object({
+    page:Joi.number(),
+   
+  })
+  const {error,value}=schema.validate(req.query);
+
+  if(error){
+    return res.status(400).json({error:"Invalid quary parameters"})
+  }  
+  const perPage:number = 2;
+  const page:number = value.page || 1;
+  
   try {
-    const todos = await Todo.find().exec();
-    res.json({ todos });
+    const todos = await Todo.find().sort({_id:-1}).skip((page-1)*perPage).limit(perPage);
+    const totalCount = await Todo.countDocuments();
+    const totalPages = Math.ceil(totalCount/perPage)
+
+    res.json({ todos,totalPages });
   } catch (error) {
     next(error);
   }
 };
+
+const searchTodos = async (req:Request,res:Response,next:NextFunction) => {
+  const schema = Joi.object({
+    page:Joi.number(),
+    search:Joi.string(),
+  })
+  const {error,value}=schema.validate(req.query);
+
+  if(error){
+    return res.status(400).json({error:"Invalid quary parameters"})
+  }  
+  const perPage:number = 2;
+  const page:number = value.page || 1;
+  const search:string = value.search || " ";
+
+  try {
+    
+    const searchedTodos = await Todo.find({title:{$regex:search,$options:'i'}}).sort({_id:-1}).skip((page-1)*perPage).limit(perPage);
+
+    const totalCount = await Todo.countDocuments({title:{$regex:search,$options:'i'}});
+    const totalPages = Math.ceil(totalCount/perPage)
+    res.json({searchedTodos, totalPages });
+
+  } catch (error) {
+    next(error)
+  }
+  
+} 
 
 const getTodo = async (req: Request, res: Response, next: NextFunction) => {
   const idSchema = Joi.object({
@@ -109,4 +152,4 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-export { getTodos, createTodos, getTodo, updateTodo, deleteTodo };
+export { getTodos, createTodos, getTodo, updateTodo, deleteTodo ,searchTodos};

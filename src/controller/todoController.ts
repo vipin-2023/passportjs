@@ -26,7 +26,7 @@ const getTodos = async (req: Request, res: Response, next: NextFunction) => {
   const page: number = value.page || 1;
 
   try {
-    const todos = await Todo.find({ownerId:idData.userId})
+    const todos = await Todo.find({ ownerId: idData.userId })
       .sort({ _id: -1 })
       .skip((page - 1) * perPage)
       .limit(perPage);
@@ -63,7 +63,8 @@ const searchTodos = async (req: Request, res: Response, next: NextFunction) => {
   const search: string = value.search || " ";
 
   try {
-    const searchedTodos = await Todo.find({ownerId:idData.userId,
+    const searchedTodos = await Todo.find({
+      ownerId: idData.userId,
       title: { $regex: search, $options: "i" },
     })
       .sort({ _id: -1 })
@@ -81,7 +82,6 @@ const searchTodos = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const getTodo = async (req: Request, res: Response, next: NextFunction) => {
-  
   const idSchema = Joi.object({
     todoId: Joi.string().required(),
   });
@@ -89,15 +89,20 @@ const getTodo = async (req: Request, res: Response, next: NextFunction) => {
     userId: Joi.string().required(),
   });
   try {
-    const { error:todoError, value:todoValue } = idSchema.validate({ todoId: req.params.todoId});
+    const { error: todoError, value: todoValue } = idSchema.validate({
+      todoId: req.params.todoId,
+    });
     if (todoError) {
       return res.status(400).json({ error: "Invalid todoId" });
     }
-    const { error, value } = Schema.validate({ userId: req.params.userId});
+    const { error, value } = Schema.validate({ userId: req.params.userId });
     if (error) {
       return res.status(400).json({ error: "Invalid userId" });
     }
-    const todo = await Todo.findOne({_id:todoValue.todoId,ownerId:value.userId});
+    const todo = await Todo.findOne({
+      _id: todoValue.todoId,
+      ownerId: value.userId,
+    });
     if (!todo) {
       return res.status(404).json({ error: "Todo not found" });
     }
@@ -128,7 +133,7 @@ const createTodos = async (req: Request, res: Response, next: NextFunction) => {
     }
     const newTodo = new Todo({
       title: value.title,
-      ownerId:idData.userId,
+      ownerId: idData.userId,
       isDone: value.isDone,
     });
     await newTodo.save();
@@ -156,7 +161,7 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
     if (idError) {
       return res.status(400).json({ error: "error in todoId params" });
     }
-    const { error, value } = Schema.validate({ userId: req.params.userId});
+    const { error, value } = Schema.validate({ userId: req.params.userId });
     if (error) {
       return res.status(400).json({ error: "Invalid userId" });
     }
@@ -169,9 +174,13 @@ const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ error: "error in update data" });
     }
 
-    const todo = await Todo.findOneAndUpdate({_id:idData.todoId,ownerId:value.userId}, updateValue, {
-      new: true,
-    });
+    const todo = await Todo.findOneAndUpdate(
+      { _id: idData.todoId, ownerId: value.userId },
+      updateValue,
+      {
+        new: true,
+      }
+    );
     if (!todo) {
       return res.status(404).json({ error: "Todo not found" });
     }
@@ -194,11 +203,16 @@ const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
     if (error) {
       return res.status(400).json({ error: "no valid todoId passed " });
     }
-    const { error:userError, value:userValue } = Schema.validate({ userId: req.params.userId});
+    const { error: userError, value: userValue } = Schema.validate({
+      userId: req.params.userId,
+    });
     if (userError) {
       return res.status(400).json({ error: "Invalid useerId" });
     }
-    const deleteTodo = await Todo.findOneAndDelete({_id:value.todoId,ownerId:userValue.userId});
+    const deleteTodo = await Todo.findOneAndDelete({
+      _id: value.todoId,
+      ownerId: userValue.userId,
+    });
 
     if (!deleteTodo) {
       return res.status(404).json({ error: "Todo not found " });

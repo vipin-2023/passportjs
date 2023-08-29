@@ -75,9 +75,11 @@ const userLoginController = async (
         );
         user.refreshToken = refreshToken;
         await user.save();
+        const accessTokenExpiration = Date.now()+13*60*1000;
+        const refreshTokenExpiration = Date.now()+((7*24)-2)*60*1000;
         res
           .cookie("refreshToken", refreshToken, { httpOnly: true })
-          .json({ accessToken });
+          .json({ accessToken ,accessTokenExpiration,refreshTokenExpiration});
       }
     )(req, res, next);
   } catch (error) {
@@ -92,6 +94,7 @@ const userRefreshTokenController = async (
 ) => {
   const schema = Joi.object({
     refreshToken: Joi.string().required(),
+    
   });
   const { error, value } = schema.validate(req.cookies);
   if (error) {
@@ -116,8 +119,10 @@ const userRefreshTokenController = async (
         "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
         { expiresIn: "15m" }
       );
+      const accessTokenExpiration = Date.now()+13*60*1000;
+      // const refreshTokenExpiration = Date.now()+((7*24)-2)*60*1000;
 
-      res.json({ accessToken });
+      res.json({ accessToken ,accessTokenExpiration});
     } else {
       return res.json({ message: "Refresh token is invalid" });
     }

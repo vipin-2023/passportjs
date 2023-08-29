@@ -4,11 +4,11 @@ import authenticateJwtMiddleware from "../middleware/isAuthenticated";
 
 const router = express.Router();
 
-router.get("/",authenticateJwtMiddleware,getTodos);
-router.get("/searchTodos",authenticateJwtMiddleware,searchTodos);
-router.post("/",authenticateJwtMiddleware,createTodos);
-router.get("/:id",authenticateJwtMiddleware,getTodo);
-router.put("/:id",authenticateJwtMiddleware,updateTodo);
-router.delete("/:id",authenticateJwtMiddleware,deleteTodo);
+router.get("/:userId",authenticateJwtMiddleware,getTodos);
+router.get("/:userId/searchTodos",authenticateJwtMiddleware,searchTodos);
+router.post("/:userId",authenticateJwtMiddleware,createTodos);
+router.get("/:userId/:todoId",authenticateJwtMiddleware,getTodo);
+router.put("/:userId/:todoId",authenticateJwtMiddleware,updateTodo);
+router.delete("/:userId/:todoId",authenticateJwtMiddleware,deleteTodo);
 
 export default router;

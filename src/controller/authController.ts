@@ -4,6 +4,25 @@ import User, { IUser } from "../models/User";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { ObjectId } from "mongoose";
+
+const generateAccessToken = (userId: string | ObjectId): string => {
+  return jwt.sign(
+    { id: userId },
+    process.env.ACCESS_KEY ||
+      "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
+    { expiresIn: "15m" }
+  );
+};
+
+const generateRefreshToken = (userId: string | ObjectId): string => {
+  return jwt.sign(
+    { id: userId },
+    process.env.REFRESH_KEY ||
+      "5JKS8EsfAKPW99tqdzdIcSWZQKtCPlFaWnRbEkOraKEvV2GX8OI8pEUM9PItKUkArHlYsZkIRnZ6q4Oy",
+    { expiresIn: "7d" }
+  );
+};
 
 const userRegistrationController = async (
   req: Request,
@@ -62,24 +81,17 @@ const userLoginController = async (
         if (!user) {
           return res.status(401).json({ message: info.message });
         }
-        const accessToken = jwt.sign(
-          { id: user._id },
-          process.env.ACCESS_KEY ||
-          "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
-          { expiresIn: "15m" }
-        );
-        const refreshToken = jwt.sign(
-          { id: user._id },
-          process.env.REFRESH_KEY || "5JKS8EsfAKPW99tqdzdIcSWZQKtCPlFaWnRbEkOraKEvV2GX8OI8pEUM9PItKUkArHlYsZkIRnZ6q4Oy",
-          { expiresIn: "7d" }
-        );
+        const accessToken = generateAccessToken(user._id);
+        const refreshToken = generateRefreshToken(user._id);
         user.refreshToken = refreshToken;
         await user.save();
-        const accessTokenExpiration = Date.now()+13*60*1000;
-        const refreshTokenExpiration = Date.now()+((7*24)-2)*60*1000;
+        const currentDate = new Date();
+        const accessTokenExpiration = currentDate.getTime() + 13 * 60 * 1000;
+        const refreshTokenExpiration =
+          currentDate.getTime() + (7 * 24 - 2) * 60 * 60 * 1000;
         res
           .cookie("refreshToken", refreshToken, { httpOnly: true })
-          .json({ accessToken ,accessTokenExpiration,refreshTokenExpiration});
+          .json({ accessToken, accessTokenExpiration, refreshTokenExpiration });
       }
     )(req, res, next);
   } catch (error) {
@@ -94,17 +106,26 @@ const userRefreshTokenController = async (
 ) => {
   const schema = Joi.object({
     refreshToken: Joi.string().required(),
-    
   });
   const { error, value } = schema.validate(req.cookies);
   if (error) {
+    return res.status(400).json({ message: "Invalid refresh token" });
+  }
+  const isRenewSchema = Joi.object({
+    isRenew: Joi.boolean(),
+  });
+  const { error: renewError, value: renewValue } = isRenewSchema.validate(
+    req.query
+  );
+  if (renewError) {
     return res.status(400).json({ message: "Invalid refresh token" });
   }
 
   try {
     const payload = jwt.verify(
       value.refreshToken,
-      process.env.REFRESH_KEY || "5JKS8EsfAKPW99tqdzdIcSWZQKtCPlFaWnRbEkOraKEvV2GX8OI8pEUM9PItKUkArHlYsZkIRnZ6q4Oy"
+      process.env.REFRESH_KEY ||
+        "5JKS8EsfAKPW99tqdzdIcSWZQKtCPlFaWnRbEkOraKEvV2GX8OI8pEUM9PItKUkArHlYsZkIRnZ6q4Oy"
     ) as JwtPayload;
     if (typeof payload !== "string") {
       const user = await User.findById(payload.id);
@@ -116,13 +137,27 @@ const userRefreshTokenController = async (
       const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_KEY ||
-        "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
+          "JSjXiPMVZXb0fWUVEu37PNgnDTe4to8tkvBrd0skpuQtEF12whjMjcUuTha88Qi1jax9adi61uf4K2yP",
         { expiresIn: "15m" }
       );
-      const accessTokenExpiration = Date.now()+13*60*1000;
-      // const refreshTokenExpiration = Date.now()+((7*24)-2)*60*1000;
-
-      res.json({ accessToken ,accessTokenExpiration});
+      const currentDate = new Date();
+      const accessTokenExpiration = currentDate.getTime() + 13 * 60 * 1000;
+      if (renewValue.isRenew) {
+        const refreshToken = jwt.sign(
+          { id: user._id },
+          process.env.REFRESH_KEY ||
+            "5JKS8EsfAKPW99tqdzdIcSWZQKtCPlFaWnRbEkOraKEvV2GX8OI8pEUM9PItKUkArHlYsZkIRnZ6q4Oy",
+          { expiresIn: "7d" }
+        );
+        user.refreshToken = refreshToken;
+        await user.save();
+        const refreshTokenExpiration =
+          currentDate.getTime() + (7 * 24 - 2) * 60 * 60 * 1000;
+        return res
+          .cookie("refreshToken", refreshToken, { httpOnly: true })
+          .json({ accessToken, accessTokenExpiration, refreshTokenExpiration });
+      }
+      res.json({ accessToken, accessTokenExpiration });
     } else {
       return res.json({ message: "Refresh token is invalid" });
     }

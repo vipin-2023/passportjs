@@ -1,0 +1,42 @@
+@import "../../sass/\ mixins.scss";
+@import "../../sass/variables.scss";
+
+.registration-form {
+    width: 300px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: rgb(255, 255, 255);
+    border-radius: 8px;
+  
+   
+    .form-group {
+      margin-bottom: 15px;
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+  
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+  
+      .error-message {
+        color: red;
+      }
+    }
+  
+    button {
+     @include button($button-color-black,$bg-color-white,1.3rem)
+    }
+  
+    p {
+      margin-top: 10px;
+      text-align: center;
+    }
+  }
+  

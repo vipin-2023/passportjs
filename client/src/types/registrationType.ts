@@ -20,3 +20,6 @@ export interface AuthContextType{
 export interface AuthProviderProps{
   children: ReactNode;
 };
+export interface ProtectedProps {
+  children: ReactNode;
+}

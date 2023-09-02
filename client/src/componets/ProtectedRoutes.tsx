@@ -1,10 +1,8 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import {Navigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
+import { ProtectedProps } from '../types/registrationType';
 
-interface ProtectedProps {
-  children: ReactNode;
-}
 
 export const Protected: React.FC<ProtectedProps> = ({  children }) => {
   const {user}=useAuth();

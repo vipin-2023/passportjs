@@ -1,0 +1,28 @@
+@import "../../sass/\ mixins.scss";
+@import "../../sass/variables.scss";
+
+.login-form{
+    @include card(40px,400px);
+    .form-group{
+        margin-bottom: 15px;
+        label{
+            display: block;
+            margin-bottom: 5px;
+        }
+        input{
+            @include input(#636363)
+        }
+        .error-message{
+            color:red;
+        }}
+        button{
+            width: 100%;
+        @include button($button-color-black,$bg-color-white,1.3rem,40px)
+           
+        }
+        p {
+            margin-top: 10px;
+            text-align: center;
+          }
+    }
+

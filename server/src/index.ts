@@ -4,11 +4,13 @@ import todoRoutes from "./routes/todoRoutes"
 import authRoutes from "./routes/authRoutes";
 import db from "./config/db";
 import passportConfig from "./middleware/passport";
+import cors from "cors";
 
 const database = db;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use(cookieParser());
 app.use(passportConfig.initialize())
 

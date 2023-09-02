@@ -10,7 +10,7 @@
         margin-bottom: 5px;
       }
       input {
-        @include input();
+        @include input(#636363);
       }
       .error-message {
         color: red;

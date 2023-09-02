@@ -1,8 +1,8 @@
 
-@mixin button ($bg,$text-color,$font-size,$m-t){
+@mixin button($bg, $text-color, $font-size, $m-t) {
     padding: 10px 15px;
     background-color: $bg;
-    color:$text-color;
+    color: $text-color;
     border: none;
     border-radius: 40px;
     font-size: $font-size;
@@ -14,8 +14,16 @@
     align-items: center;
     margin-top: $m-t;
     font-weight: 700;
-    @content
-};
+  
+    &:disabled {
+      background-color: lightgray; 
+      cursor: not-allowed;
+      color:rgb(67, 67, 67)
+    }
+  
+    @content;
+  }
+  
 @mixin card ($border-radius,$width){
     width: $width;
     margin: auto;
@@ -25,7 +33,7 @@
     border-radius: $border-radius;
     @content
 }
-@mixin input (){
+@mixin input ($color){
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
@@ -33,5 +41,6 @@
     font-size: 1.2rem;
     letter-spacing: .2rem;
     font-weight: 700;
+    color:$color;
     @content
 }

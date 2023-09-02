@@ -89,9 +89,11 @@ const userLoginController = async (
         const accessTokenExpiration = currentDate.getTime() + 13 * 60 * 1000;
         const refreshTokenExpiration =
           currentDate.getTime() + (7 * 24 - 2) * 60 * 60 * 1000;
+          user.password=undefined,
+          user.refreshToken=undefined
         res
           .cookie("refreshToken", refreshToken, { httpOnly: true })
-          .json({ accessToken, accessTokenExpiration, refreshTokenExpiration });
+          .json({ accessToken, accessTokenExpiration, refreshTokenExpiration,user });
       }
     )(req, res, next);
   } catch (error) {

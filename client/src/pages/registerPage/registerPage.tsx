@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import "./registerPage.scss";
@@ -8,8 +8,11 @@ import { Register } from "../../types/registrationType";
 import { useNavigate } from "react-router-dom";
 
 
+
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
+ 
+ 
   const [isSubmit, setIsSubmit] = useState(false);
   const initialValues = {
     name: "",

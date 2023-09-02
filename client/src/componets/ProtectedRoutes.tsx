@@ -1,23 +1,26 @@
-import React, { useEffect } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import React, { ReactNode } from 'react';
+import {Navigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
-type ProtectedRouteProps = {
-  children: React.ReactNode;
-};
+interface ProtectedProps {
+  children: ReactNode;
+}
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+export const Protected: React.FC<ProtectedProps> = ({  children }) => {
+  const {user}=useAuth();
 
-  useEffect(() => {
-    if (!user) {
-
-      navigate('/login');
-    }
-  }, [user, navigate]);
-
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
   return <>{children}</>;
 };
 
-export default ProtectedRoute;
+export const Authrized: React.FC<ProtectedProps> = ({  children }) => {
+  const {user}=useAuth();
+
+  if (user) {
+    return <Navigate to="/" replace />;
+  }
+  return <>{children}</>;
+};
+

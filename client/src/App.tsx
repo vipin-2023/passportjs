@@ -1,34 +1,32 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { useAuth } from "./context/authContext";
-import ProtectedRoute from "./componets/ProtectedRoutes";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
 import HomePage from "./pages/homePage/homePage";
 import LoginPage from "./pages/loginPage/loginPage";
 import RegisterPage from "./pages/registerPage/registerPage";
 import ErrorPage from "./pages/errorPage/errorPage";
+import { Protected, Authrized } from "./componets/ProtectedRoutes";
 
 const App: React.FC = () => {
-  const { user } = useAuth();
-  console.log(user)
-
   return (
     <Router>
       <Routes>
-      <Route
-          path="/"
+        <Route path="/login" element={
+            <Authrized>
+              <LoginPage />
+            </Authrized>
+          }/>
+        <Route path="/signup" element={
+            <Authrized>
+              <RegisterPage />
+            </Authrized>
+          } />
+        <Route path="/"
           element={
-            <ProtectedRoute>
+            <Protected>
               <HomePage />
-            </ProtectedRoute>
-          }
-        />
-        {!user && (
-          <>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<RegisterPage />} />
-          </>
-        )}
-        
+            </Protected>
+          }/>
         <Route path="*" element={<ErrorPage />} />
       </Routes>
     </Router>

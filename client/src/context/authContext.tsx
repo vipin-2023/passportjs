@@ -1,14 +1,19 @@
 // AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-
-type AuthContextType = {
+type IAuthContext = {
   user: any | null;
   login: (user: any) => void;
   logout: () => void;
 };
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface IUser {
+  createdAt: string;
+  email: string;
+  name: string;
+  updatedAt:string;
+  _id:string;
+}
+const AuthContext = createContext<IAuthContext | undefined>(undefined);
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -17,22 +22,23 @@ type AuthProviderProps = {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<any | null>(null);
 
- 
   useEffect(() => {
     const userFromLocalStorage = localStorage.getItem('user');
     if (userFromLocalStorage) {
-      localStorage.setItem('user', userFromLocalStorage);
-      setUser(userFromLocalStorage);
+      const parsedUser: Partial<IUser> = JSON.parse(userFromLocalStorage);
+      setUser(parsedUser);
     }
   }, []);
+  
 
-  const login = (loggedInUser: any) => {
-    localStorage.setItem('user', loggedInUser);
+  const login = (loggedInUser: Partial<IUser>) => {
+    const userString = JSON.stringify(loggedInUser);
+    localStorage.setItem("user", userString);
     setUser(loggedInUser);
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
+    localStorage.removeItem("user");
     setUser(null);
   };
 
@@ -43,10 +49,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
 };
 
-export const useAuth = (): AuthContextType => {
+export const useAuth = (): IAuthContext => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

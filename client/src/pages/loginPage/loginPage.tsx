@@ -1,5 +1,5 @@
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import * as Yup from "yup";
 import { Login } from "../../types/registrationType";
 import { useNavigate } from "react-router-dom";
@@ -9,8 +9,12 @@ import "./loginPage.scss";
 import { useAuth } from "../../context/authContext";
 
 const LoginPage: React.FC = () => {
-  const { login } = useAuth();
   const navigate = useNavigate();
+  
+  
+ 
+  const { login } = useAuth();
+  
   const [isSubmit, setIsSubmit] = useState(false);
   const initialValues = {
     email: "",

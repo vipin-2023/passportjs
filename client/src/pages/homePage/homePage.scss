@@ -1,0 +1,65 @@
+@import "../../sass/\ mixins.scss";
+@import "../../sass/variables.scss";
+
+.todo-list {
+  @include card(15px, 670px);
+  max-height: 800px;
+  .form-group {
+    @include hide-scrollbar;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    input {
+      @include input(#636363);
+      width: 80%;
+    }
+    button {
+      @include button($button-color-black, $bg-color-white, 1.3rem, 10px);
+      width: 20%;
+      margin-top: 0;
+      border-radius: 10px;
+    }
+  }
+  .list-group {
+    width: 100%;
+    padding: 5px;
+    overflow-y: scroll;
+    max-height: 550px;
+    margin-top: 20px;
+    .todo-item {
+      width: 100%;
+      display: flex;
+      margin: 10px 0;
+      background-color: #f6f6f6;
+      border-radius: 20px;
+      padding: 10px;
+      .check-circle {
+        width: 40px;
+        height: 40px;
+        background-color: #3df539;
+        border: 1px solid black;
+        border-radius: 50%;
+      }
+      .itemNotcheck-circle{
+        width: 40px;
+        height: 40px;
+        background-color: #ffffff;
+        border: 1px solid black;
+        border-radius: 50%;
+      }
+      .todo {
+        margin-left: 10px;
+        color: #9d9d9d;
+        background-color: white;
+        width: 100%;
+        padding: 5px 30px;
+        border-radius: 10px;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

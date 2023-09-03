@@ -44,3 +44,8 @@
     color:$color;
     @content
 }
+@mixin hide-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

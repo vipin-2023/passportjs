@@ -6,6 +6,7 @@ import axios from "axios";
 import * as commons from "../../common/config";
 import { Register } from "../../types/registrationType";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 
@@ -104,6 +105,9 @@ const RegisterPage: React.FC = () => {
           <button type="submit" disabled={isSubmit}>
             {isSubmit ? "Registering..." : "Register"}
           </button>
+          <h4>
+            already user? <Link to="/login">Login</Link>
+          </h4>
         </Form>
       </Formik>
     </div>

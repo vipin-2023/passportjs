@@ -1,5 +1,5 @@
 import { Field, Formik, Form, ErrorMessage } from "formik";
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { Login } from "../../types/registrationType";
 import { useNavigate } from "react-router-dom";
@@ -7,14 +7,13 @@ import * as commons from "../../common/config";
 import axios from "axios";
 import "./loginPage.scss";
 import { useAuth } from "../../context/authContext";
+import { Link } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  
-  
- 
+
   const { login } = useAuth();
-  
+
   const [isSubmit, setIsSubmit] = useState(false);
   const initialValues = {
     email: "",
@@ -30,17 +29,23 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (value: Login) => {
     setIsSubmit(true);
     try {
-      const response =await axios.post(`${commons.baseUrl}/auth/login`, value);
-      if(response.status==200){
-        console.log(response.data)
-     
-      localStorage.setItem("accessToken",response.data.accessToken)
-      localStorage.setItem("accessTokenExpiration",response.data.accessTokenExpiration)
-      localStorage.setItem("refreshTokenExpiration",response.data.refreshTokenExpiration)
-      login(response.data.user);
-      navigate("/");
-      }else{
-        alert("something went wrong")
+      const response = await axios.post(`${commons.baseUrl}/auth/login`, value);
+      if (response.status == 200) {
+        console.log(response.data);
+
+        localStorage.setItem("accessToken", response.data.accessToken);
+        localStorage.setItem(
+          "accessTokenExpiration",
+          response.data.accessTokenExpiration
+        );
+        localStorage.setItem(
+          "refreshTokenExpiration",
+          response.data.refreshTokenExpiration
+        );
+        login(response.data.user);
+        navigate("/");
+      } else {
+        alert("something went wrong");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -77,7 +82,9 @@ const LoginPage: React.FC = () => {
           <button type="submit" disabled={isSubmit}>
             {isSubmit ? "Loging..." : "Login"}
           </button>
-          
+          <h4>
+            new user? <Link to="/signup">Signup</Link>
+          </h4>
         </Form>
       </Formik>
     </div>

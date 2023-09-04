@@ -10,7 +10,12 @@ const database = db;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(
+    cors({
+      origin: 'http://localhost:5173', // Adjust the origin to match your client's URL
+      credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    })
+  );
 app.use(cookieParser());
 app.use(passportConfig.initialize())
 

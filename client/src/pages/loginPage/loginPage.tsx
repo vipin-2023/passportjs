@@ -29,7 +29,9 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (value: Login) => {
     setIsSubmit(true);
     try {
-      const response = await axios.post(`${commons.baseUrl}/auth/login`, value);
+      const response = await axios.post(`${commons.baseUrl}/auth/login`, value,{
+        withCredentials: true,
+      });
       if (response.status == 200) {
         console.log(response.data);
 
